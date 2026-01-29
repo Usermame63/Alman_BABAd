@@ -54,13 +54,9 @@
         .hamster-btn:active { transform: scale(0.95); }
         .hamster-img { width: 100%; pointer-events: none; border-radius: 50%; border: 4px solid #f0b90b; box-shadow: 0 0 20px #f0b90b; }
 
-        /* MINING CARDS */
+        /* KARTLAR VƏ GRIDLƏR */
         .mining-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 92%; margin-top: 10px; }
-        .mine-card { 
-            background: #252525; border-radius: 12px; padding: 10px; 
-            display: flex; flex-direction: column; justify-content: space-between;
-            border-bottom: 3px solid #1a1a1a;
-        }
+        .mine-card { background: #252525; border-radius: 12px; padding: 10px; display: flex; flex-direction: column; justify-content: space-between; border-bottom: 3px solid #1a1a1a; }
         .mine-header { display: flex; align-items: center; margin-bottom: 5px; }
         .mine-icon { font-size: 24px; margin-right: 10px; color: #f0b90b; }
         .mine-title { font-size: 13px; font-weight: bold; line-height: 1.2; }
@@ -69,12 +65,11 @@
         .mine-lvl { font-size: 10px; font-weight: bold; }
         .mine-price { font-size: 12px; font-weight: bold; display: flex; align-items: center; }
         
-        /* SHOP & WITHDRAW GRIDS */
         .shop-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; width: 90%; margin-top: 20px; }
         .card { background: #1c1c1e; border-radius: 15px; padding: 15px; text-align: center; border: 1px solid #333; display: flex; flex-direction: column; justify-content: space-between; }
         .card h3 { font-size: 16px; margin: 5px 0; color: #fff; }
         .card p { font-size: 13px; color: #aaa; margin-bottom: 10px; }
-        .price-btn { background: #f0b90b; color: black; border: none; padding: 10px; border-radius: 10px; font-weight: bold; width: 100%; cursor: pointer; font-size: 14px; }
+        .price-btn { background: #f0b90b; color: black; border: none; padding: 10px; border-radius: 10px; font-weight: bold; width: 100%; cursor: pointer; font-size: 12px; }
         .price-btn:active { transform: scale(0.95); }
 
         /* MENYU */
@@ -104,33 +99,29 @@
         .confirm-btn { background: #f0b90b; color: black; }
         .cancel-btn { background: #444; color: white; }
 
-        /* --- YENİ: CANLI BİLDİRİŞ (TOAST) --- */
-        .live-toast {
-            position: fixed;
-            top: 15px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(0, 200, 0, 0.2);
-            border: 1px solid #00ff00;
-            color: #fff;
-            padding: 10px 20px;
-            border-radius: 25px;
-            font-size: 12px;
-            font-weight: bold;
-            z-index: 3000;
-            display: none; /* JS ilə açılacaq */
-            backdrop-filter: blur(5px);
-            box-shadow: 0 0 15px rgba(0, 255, 0, 0.4);
-            white-space: nowrap;
-            animation: slideDown 0.5s ease-out;
+        /* --- YENİ: TARİXÇƏ (HISTORY) SİYAHISI STİLİ --- */
+        .history-list {
+            width: 90%;
+            margin-top: 20px;
         }
-        @keyframes slideDown { 0% { top: -50px; opacity: 0; } 100% { top: 15px; opacity: 1; } }
+        .history-item {
+            background: #2c2c2e;
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 4px solid #f0b90b;
+            cursor: pointer;
+        }
+        .history-info div { font-weight: bold; font-size: 14px; }
+        .history-info span { font-size: 11px; color: #aaa; }
+        .history-icon { font-size: 18px; color: #f0b90b; }
 
     </style>
 </head>
 <body>
-
-    <div id="liveToast" class="live-toast">User 10 AZN Çıxardı 💸</div>
 
     <div id="dataModal" class="input-modal">
         <div class="modal-content">
@@ -195,12 +186,26 @@
     <div id="screen-withdraw" class="screen">
         <div class="header" style="margin-bottom: 20px;"><h1>PUL ÇIXARIŞI</h1></div>
         <div class="balance-container"><span class="balance-text" id="wd-score">0</span> <img src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png" width="24"></div>
+        
+        <div style="width: 90%; margin-bottom: 20px;">
+            <button class="price-btn" style="background: #333; color: #fff; border: 1px solid #555;" onclick="switchScreen('history')">
+                <i class="fas fa-list"></i> 📜 Çıxarış Edənlər
+            </button>
+        </div>
+
         <div class="shop-grid">
             <div class="card"><h3>0.20 Qəpik</h3><p>10,000 Coin</p><button class="price-btn" onclick="requestItem('withdraw', 10000, '0.20 Qəpik')">ÇIXAR</button></div>
             <div class="card"><h3>0.50 Qəpik</h3><p>25,000 Coin</p><button class="price-btn" onclick="requestItem('withdraw', 25000, '0.50 Qəpik')">ÇIXAR</button></div>
             <div class="card"><h3>1.00 AZN</h3><p>50,000 Coin</p><button class="price-btn" onclick="requestItem('withdraw', 50000, '1.00 AZN')">ÇIXAR</button></div>
             <div class="card"><h3>10.00 AZN</h3><p>1.5M Coin</p><button class="price-btn" onclick="requestItem('withdraw', 1500000, '10.00 AZN')">ÇIXAR</button></div>
         </div>
+    </div>
+
+    <div id="screen-history" class="screen">
+        <div class="header" style="margin-bottom: 20px;"><h1>SON ÇIXARIŞLAR</h1></div>
+        <div id="history-list" class="history-list">
+            </div>
+        <button class="price-btn" style="width: 50%; margin-top:20px;" onclick="switchScreen('withdraw')">Geri Qayıt</button>
     </div>
 
     <div class="navbar">
@@ -214,7 +219,6 @@
         let tg = window.Telegram.WebApp;
         tg.expand();
 
-        // 1. DATA LOADER
         const urlParams = new URLSearchParams(window.location.search);
         let botBalance = parseFloat(urlParams.get('balance'));
         let botLevel = parseInt(urlParams.get('level'));
@@ -239,6 +243,10 @@
         ];
 
         let upgrades = JSON.parse(localStorage.getItem('upgrades')) || defaultUpgrades;
+        
+        // --- REAL ÇIXARIŞ TARİXÇƏSİ (LocalStorage-də saxlayır) ---
+        let withdrawalHistory = JSON.parse(localStorage.getItem('withdrawalHistory')) || [];
+
         let profitPerHour = 0;
 
         const scoreEl = document.getElementById('score');
@@ -252,29 +260,9 @@
         const levelReqEl = document.getElementById('next-level-req');
         const progressFill = document.getElementById('progress-fill');
         const miningGrid = document.getElementById('mining-grid');
+        const historyListEl = document.getElementById('history-list');
 
-        // --- YENİ: CANLI BİLDİRİŞ SİSTEMİ (Fake Notifications) ---
-        const fakeNames = ["Murad", "Aysel", "Elvin", "Zeyn", "Nigar", "Samir", "Leyla", "Admin", "User777"];
-        const fakeActions = ["0.50 AZN Çıxardı 💸", "1K TikTok Bəyənmə Aldı 🎵", "10 AZN Çıxardı 🤑", "5K Like Sifariş Etdi ❤️", "0.20 AZN Çıxardı 💸"];
-
-        function showLiveNotification() {
-            const toast = document.getElementById('liveToast');
-            const randomName = fakeNames[Math.floor(Math.random() * fakeNames.length)];
-            const randomAction = fakeActions[Math.floor(Math.random() * fakeActions.length)];
-            
-            toast.innerText = `${randomName} ${randomAction}`;
-            toast.style.display = 'block';
-
-            setTimeout(() => {
-                toast.style.display = 'none';
-            }, 4000); // 4 saniyə görsənir
-        }
-
-        // Hər 10-15 saniyədən bir bildiriş çıxarır
-        setInterval(showLiveNotification, 12000); 
-        // ----------------------------------------------------
-
-        // POPUP SISTEMI
+        // --- POPUP FUNKSİYALARI ---
         let pendingAction = null;
 
         function requestItem(type, price, name) {
@@ -318,6 +306,18 @@
             balance -= pendingAction.price;
             updateUI();
             
+            // --- SİYAHIYA ƏLAVƏ ET (REAL DATA) ---
+            let newRecord = {
+                name: "Siz", // Özü olduğu üçün "Siz"
+                action: pendingAction.name,
+                detail: inputVal,
+                time: new Date().toLocaleTimeString()
+            };
+            withdrawalHistory.unshift(newRecord); // Ən başa əlavə et
+            localStorage.setItem('withdrawalHistory', JSON.stringify(withdrawalHistory));
+            renderHistory(); // Siyahını yenilə
+
+            // Bota göndər
             let data = {
                 action: pendingAction.type,
                 amount: pendingAction.price,
@@ -326,6 +326,30 @@
             };
             tg.sendData(JSON.stringify(data));
             closeModal();
+        }
+
+        // --- TARİXÇƏNİ GÖSTƏRƏN FUNKSİYA ---
+        function renderHistory() {
+            historyListEl.innerHTML = "";
+            if (withdrawalHistory.length === 0) {
+                historyListEl.innerHTML = "<p style='color:#666; text-align:center;'>Hələ heç kim çıxarış etməyib.</p>";
+                return;
+            }
+
+            withdrawalHistory.forEach(record => {
+                let div = document.createElement('div');
+                div.className = 'history-item';
+                div.onclick = () => { alert(`📌 Detallar:\n\n👤 İstifadəçi: ${record.name}\n📦 Paket: ${record.action}\n🔗 Məlumat: ${record.detail}\n⏰ Saat: ${record.time}`); };
+                
+                div.innerHTML = `
+                    <div class="history-info">
+                        <div>${record.name} - ${record.action}</div>
+                        <span>${record.time} • Təsdiqlənir...</span>
+                    </div>
+                    <i class="fas fa-info-circle history-icon"></i>
+                `;
+                historyListEl.appendChild(div);
+            });
         }
 
         function calculateProfit() {
@@ -393,9 +417,10 @@
         function switchScreen(name, btn) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.getElementById('screen-' + name).classList.add('active');
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-            if(btn) btn.classList.add('active');
-            else document.querySelectorAll('.nav-item')[0].classList.add('active');
+            if (btn) {
+                document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+                btn.classList.add('active');
+            }
         }
 
         function formatNumber(num) {
@@ -407,10 +432,7 @@
         setInterval(() => { if (profitPerHour > 0) { balance += profitPerHour / 3600; updateUI(); } }, 1000);
         setInterval(() => { if (energy < 500) { energy++; updateUI(); } }, 1000);
 
-        calculateProfit(); renderUpgrades(); updateUI();
-        
-        // İlk açılışda bir dənə bildiriş göstərək ki, maraqlı olsun
-        setTimeout(showLiveNotification, 3000);
+        calculateProfit(); renderUpgrades(); updateUI(); renderHistory();
     </script>
 </body>
 </html>
