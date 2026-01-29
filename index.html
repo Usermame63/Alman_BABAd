@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="az">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Hamster Tycoon</title>
+    <title>Hamster Tycoon AZ</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
@@ -15,131 +15,178 @@
             height: 100vh;
             display: flex;
             flex-direction: column;
+            align-items: center;
             overflow: hidden;
             user-select: none;
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* TAB SYSTEM (Səhifələr) */
-        .tab-content { display: none; flex-grow: 1; width: 100%; overflow-y: auto; padding-bottom: 80px; }
-        .tab-content.active { display: flex; flex-direction: column; align-items: center; }
-
-        /* HEADER */
-        .header { margin-top: 15px; text-align: center; }
-        .balance-container { text-align: center; margin: 20px 0; }
-        .balance-text { font-size: 36px; font-weight: bold; color: #f0b90b; }
-
-        /* MAIN GAME (HAMSTER) */
-        .hamster-container { position: relative; width: 260px; height: 260px; margin: 20px auto; display: flex; justify-content: center; align-items: center; }
-        .hamster-btn { width: 100%; height: 100%; border-radius: 50%; background: radial-gradient(#333, #000); border: 4px solid #f0b90b; box-shadow: 0 0 20px #f0b90b; cursor: pointer; transition: transform 0.1s; overflow: hidden; }
-        .hamster-btn:active { transform: scale(0.95); }
-        .hamster-img { width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
+        /* YUXARI HİSSƏ */
+        .header { margin-top: 15px; text-align: center; text-transform: uppercase; }
+        .header h1 { margin: 0; font-size: 24px; font-weight: 800; letter-spacing: 1px; color: #f0b90b; }
         
-        /* SHOP CARDS */
-        .shop-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 95%; margin-top: 10px; }
-        .card { background: #1c1c1e; border-radius: 15px; padding: 15px; text-align: center; border: 1px solid #333; }
-        .card h3 { font-size: 14px; margin: 5px 0; color: #fff; }
-        .card p { font-size: 12px; color: #aaa; margin-bottom: 10px; }
-        .price-btn { background: #f0b90b; color: black; border: none; padding: 8px 15px; border-radius: 8px; font-weight: bold; width: 100%; cursor: pointer; }
+        /* EKRANLAR (TABS) */
+        .screen { display: none; width: 100%; flex-direction: column; align-items: center; height: 100%; overflow-y: auto; padding-bottom: 80px; }
+        .screen.active { display: flex; }
+
+        /* STATİSTİKA (Yalnız Ana Ekranda) */
+        .stats-container { display: flex; justify-content: space-between; width: 90%; margin-bottom: 20px; margin-top: 10px; }
+        .stat-box { background: #252525; border-radius: 10px; width: 32%; padding: 10px 5px; text-align: center; font-size: 10px; color: #888; }
+        .stat-value { display: block; font-size: 13px; color: white; font-weight: bold; margin-top: 4px; }
+        .yellow-text { color: #f0b90b; }
+        .text-blue { color: #4facfe; }
+
+        /* BALANS */
+        .balance-container { text-align: center; margin-bottom: 10px; }
+        .coin-icon { width: 30px; vertical-align: middle; margin-right: 5px; }
+        .balance-text { font-size: 32px; font-weight: bold; vertical-align: middle; }
+
+        /* PROGRESS BAR */
+        .progress-container { width: 90%; margin-bottom: 10px; }
+        .progress-labels { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 5px; color: #ccc; }
+        .progress-bar-bg { width: 100%; height: 8px; background: #333; border-radius: 5px; overflow: hidden; }
+        .progress-bar-fill { width: 0%; height: 100%; background: linear-gradient(90deg, #6fdc72, #2ecc71); transition: width 0.3s; }
+
+        /* HAMSTER (OYUN) */
+        .main-game { flex-grow: 1; display: flex; justify-content: center; align-items: center; position: relative; width: 100%; min-height: 300px; }
+        .hamster-bg-glow { position: absolute; width: 280px; height: 280px; background: radial-gradient(circle, rgba(62, 88, 148, 0.6) 0%, rgba(0,0,0,0) 70%); border-radius: 50%; z-index: 1; }
+        .hamster-btn { position: relative; z-index: 2; width: 240px; cursor: pointer; transition: transform 0.1s; }
+        .hamster-btn:active { transform: scale(0.95); }
+        .hamster-img { width: 100%; pointer-events: none; border-radius: 50%; border: 4px solid #f0b90b; box-shadow: 0 0 20px #f0b90b; }
+
+        /* ENERJİ */
+        .energy-info { width: 90%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-size: 14px; font-weight: bold; }
+
+        /* KARTLAR (TikTok və Çıxarış üçün) */
+        .shop-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; width: 90%; margin-top: 20px; }
+        .card { background: #1c1c1e; border-radius: 15px; padding: 15px; text-align: center; border: 1px solid #333; display: flex; flex-direction: column; justify-content: space-between; }
+        .card h3 { font-size: 16px; margin: 5px 0; color: #fff; }
+        .card p { font-size: 13px; color: #aaa; margin-bottom: 10px; }
+        .price-btn { background: #f0b90b; color: black; border: none; padding: 10px; border-radius: 10px; font-weight: bold; width: 100%; cursor: pointer; font-size: 14px; }
         .price-btn:active { transform: scale(0.95); }
 
-        /* NAVBAR */
-        .navbar { position: fixed; bottom: 0; width: 100%; background: #1c1c1e; padding: 15px 0; display: flex; justify-content: space-around; border-top: 1px solid #333; z-index: 100; }
-        .nav-item { text-align: center; color: #666; font-size: 10px; cursor: pointer; }
+        /* MENYU */
+        .navbar { position: fixed; bottom: 0; width: 100%; background: #1c1c1e; padding: 10px 0; border-top-left-radius: 20px; border-top-right-radius: 20px; display: flex; justify-content: space-around; z-index: 50; border-top: 1px solid #333; }
+        .nav-item { text-align: center; color: #666; font-size: 11px; cursor: pointer; flex: 1; }
         .nav-item.active { color: #f0b90b; }
-        .nav-icon { font-size: 20px; margin-bottom: 5px; display: block; }
+        .nav-icon { font-size: 20px; margin-bottom: 4px; display: block; }
 
-        /* FLOATING TEXT */
+        /* MAĞAZA MODAL (Enerji üçün) */
+        .shop-modal { position: fixed; bottom: -100%; left: 0; width: 100%; height: 50%; background: #1c1c1e; border-radius: 20px 20px 0 0; transition: bottom 0.3s; z-index: 100; display: flex; flex-direction: column; align-items: center; padding-top: 20px; box-shadow: 0 -5px 20px rgba(0,0,0,0.5); }
+        .shop-modal.open { bottom: 0; }
+        .shop-row { width: 90%; background: #2c2c2e; padding: 15px; border-radius: 15px; display: flex; justify-content: space-between; align-items: center; margin-top: 20px; }
+        .close-shop { position: absolute; top: 15px; right: 20px; font-size: 24px; cursor: pointer; }
+
+        /* ANIMASIYA */
         .floating-text { position: absolute; color: white; font-size: 28px; font-weight: bold; pointer-events: none; animation: floatUp 0.8s ease-out forwards; z-index: 10; text-shadow: 0 0 5px black; }
         @keyframes floatUp { 0% { transform: translateY(0); opacity: 1; } 100% { transform: translateY(-100px); opacity: 0; } }
-
-        /* ENERGY */
-        .energy-bar { width: 90%; margin: 10px auto; display: flex; justify-content: space-between; font-size: 14px; font-weight: bold; }
 
     </style>
 </head>
 <body>
 
-    <div id="tab-home" class="tab-content active">
-        <div class="header"><h1>HAMSTER MINER</h1></div>
-        
+    <div id="screen-home" class="screen active">
+        <div class="header"><h1>SƏVİYYƏNİ QALDIR</h1></div>
+
+        <div class="stats-container">
+            <div class="stat-box">
+                Tık Qazancı
+                <span class="stat-value yellow-text" id="per-tap">+1</span>
+            </div>
+            <div class="stat-box">
+                Səviyyəyə qalıb
+                <span class="stat-value text-blue" id="next-level-req">5K</span>
+            </div>
+            <div class="stat-box">
+                Saatlıq Gəlir
+                <span class="stat-value yellow-text">+0</span>
+            </div>
+        </div>
+
         <div class="balance-container">
-            <div class="balance-text" id="display-score">0</div>
-            <div style="font-size: 12px; color: #aaa;">Coins</div>
+            <img src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png" class="coin-icon">
+            <span class="balance-text" id="score">0</span>
         </div>
 
-        <div class="hamster-container">
+        <div class="progress-container">
+            <div class="progress-labels">
+                <span id="level-name">Bürünc</span>
+                <span id="level-num">Səviyyə 1/10</span>
+            </div>
+            <div class="progress-bar-bg">
+                <div class="progress-bar-fill" id="progress-fill"></div>
+            </div>
+        </div>
+
+        <div class="main-game">
+            <div class="hamster-bg-glow"></div>
             <div class="hamster-btn" onclick="tikla(event)">
-                <img src="https://i.pinimg.com/originals/82/20/f7/8220f772439396d396032483d7395066.png" class="hamster-img">
+                <img src="https://i.pinimg.com/originals/82/20/f7/8220f772439396d396032483d7395066.png" class="hamster-img" alt="Hamster">
             </div>
         </div>
 
-        <div class="energy-bar">
-            <span>⚡ <span id="energy">500</span>/500</span>
-            <span id="level-display">Lvl 1</span>
-        </div>
-    </div>
-
-    <div id="tab-withdraw" class="tab-content">
-        <div class="header"><h1>PUL ÇIXARIŞI</h1></div>
-        <div class="balance-container"><div class="balance-text" id="w-score">0</div></div>
-        
-        <div class="shop-grid">
-            <div class="card">
-                <h3>0.20 Qəpik</h3>
-                <p>10,000 Coin</p>
-                <button class="price-btn" onclick="buyItem('withdraw', 10000, '0.20 Qəpik')">AL</button>
-            </div>
-            <div class="card">
-                <h3>0.50 Qəpik</h3>
-                <p>25,000 Coin</p>
-                <button class="price-btn" onclick="buyItem('withdraw', 25000, '0.50 Qəpik')">AL</button>
-            </div>
-            <div class="card">
-                <h3>1.00 AZN</h3>
-                <p>50,000 Coin</p>
-                <button class="price-btn" onclick="buyItem('withdraw', 50000, '1 AZN')">AL</button>
-            </div>
-            <div class="card">
-                <h3>10.00 AZN</h3>
-                <p>1,500,000 Coin</p>
-                <button class="price-btn" onclick="buyItem('withdraw', 1500000, '10 AZN')">AL</button>
+        <div class="energy-info">
+            <div class="energy-val">
+                <i class="fas fa-bolt yellow-text" style="margin-right:5px;"></i> 
+                <span id="energy">500</span> / <span id="max-energy">500</span>
             </div>
         </div>
     </div>
 
-    <div id="tab-services" class="tab-content">
-        <div class="header"><h1>TİKTOK PANEL</h1></div>
-        <div class="balance-container"><div class="balance-text" id="s-score">0</div></div>
-
+    <div id="screen-tiktok" class="screen">
+        <div class="header" style="margin-bottom: 20px;"><h1>TİKTOK BƏYƏNMƏ</h1></div>
+        <div class="balance-container">
+            <span class="balance-text" id="tt-score">0</span> <img src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png" width="24">
+        </div>
         <div class="shop-grid">
-            <div class="card">
-                <h3>1K Bəyənmə</h3>
-                <p>2,000 Coin</p>
-                <button class="price-btn" onclick="buyItem('tiktok', 2000, '1K Like')">SİFARİŞ ET</button>
-            </div>
-            <div class="card">
-                <h3>3K Bəyənmə</h3>
-                <p>4,000 Coin</p>
-                <button class="price-btn" onclick="buyItem('tiktok', 4000, '3K Like')">SİFARİŞ ET</button>
-            </div>
-            <div class="card">
-                <h3>5K Bəyənmə</h3>
-                <p>8,000 Coin</p>
-                <button class="price-btn" onclick="buyItem('tiktok', 8000, '5K Like')">SİFARİŞ ET</button>
-            </div>
+            <div class="card"><h3>1K Bəyənmə</h3><p>2,000 Coin</p><button class="price-btn" onclick="buyItem('tiktok', 2000, '1K Bəyənmə')">SİFARİŞ ET</button></div>
+            <div class="card"><h3>2K Bəyənmə</h3><p>4,000 Coin</p><button class="price-btn" onclick="buyItem('tiktok', 4000, '2K Bəyənmə')">SİFARİŞ ET</button></div>
+            <div class="card"><h3>3K Bəyənmə</h3><p>6,000 Coin</p><button class="price-btn" onclick="buyItem('tiktok', 6000, '3K Bəyənmə')">SİFARİŞ ET</button></div>
+            <div class="card"><h3>4K Bəyənmə</h3><p>8,000 Coin</p><button class="price-btn" onclick="buyItem('tiktok', 8000, '4K Bəyənmə')">SİFARİŞ ET</button></div>
+            <div class="card"><h3>5K Bəyənmə</h3><p>10,000 Coin</p><button class="price-btn" onclick="buyItem('tiktok', 10000, '5K Bəyənmə')">SİFARİŞ ET</button></div>
+            <div class="card"><h3>8K Bəyənmə</h3><p>16,000 Coin</p><button class="price-btn" onclick="buyItem('tiktok', 16000, '8K Bəyənmə')">SİFARİŞ ET</button></div>
+        </div>
+    </div>
+
+    <div id="screen-withdraw" class="screen">
+        <div class="header" style="margin-bottom: 20px;"><h1>PUL ÇIXARIŞI</h1></div>
+        <div class="balance-container">
+            <span class="balance-text" id="wd-score">0</span> <img src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png" width="24">
+        </div>
+        <div class="shop-grid">
+            <div class="card"><h3>0.20 Qəpik</h3><p>10,000 Coin</p><button class="price-btn" onclick="buyItem('withdraw', 10000, '0.20 Qəpik')">ÇIXAR</button></div>
+            <div class="card"><h3>0.50 Qəpik</h3><p>25,000 Coin</p><button class="price-btn" onclick="buyItem('withdraw', 25000, '0.50 Qəpik')">ÇIXAR</button></div>
+            <div class="card"><h3>1.00 AZN</h3><p>50,000 Coin</p><button class="price-btn" onclick="buyItem('withdraw', 50000, '1.00 AZN')">ÇIXAR</button></div>
+            <div class="card"><h3>10.00 AZN</h3><p>1.5M Coin</p><button class="price-btn" onclick="buyItem('withdraw', 1500000, '10.00 AZN')">ÇIXAR</button></div>
         </div>
     </div>
 
     <div class="navbar">
-        <div class="nav-item active" onclick="switchTab('home', this)">
-            <i class="fas fa-hammer nav-icon"></i> Mədən
+        <div class="nav-item active" onclick="switchScreen('home', this)">
+            <i class="fas fa-home nav-icon"></i> Ana Səhifə
         </div>
-        <div class="nav-item" onclick="switchTab('withdraw', this)">
+        <div class="nav-item" onclick="openShop()">
+            <i class="fas fa-hammer nav-icon"></i> Mağaza
+        </div>
+        <div class="nav-item" onclick="switchScreen('tiktok', this)">
+            <i class="fab fa-tiktok nav-icon"></i> TikTok
+        </div>
+        <div class="nav-item" onclick="switchScreen('withdraw', this)">
             <i class="fas fa-wallet nav-icon"></i> Çıxarış
         </div>
-        <div class="nav-item" onclick="switchTab('services', this)">
-            <i class="fas fa-hashtag nav-icon"></i> TikTok
+    </div>
+
+    <div class="shop-modal" id="shop-modal">
+        <div class="close-shop" onclick="closeShop()">&times;</div>
+        <h2>Gücləndir</h2>
+        <div class="shop-row">
+            <div>
+                <div style="font-weight:bold;">Enerji Çəni (+500)</div>
+                <div style="font-size:12px; color:#aaa;">Limiti artırır</div>
+            </div>
+            <button class="shop-btn price-btn" style="width:auto;" id="btn-buy-energy" onclick="buyMaxEnergy()">
+                <img src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png" width="12"> 500
+            </button>
         </div>
     </div>
 
@@ -147,91 +194,130 @@
         let tg = window.Telegram.WebApp;
         tg.expand();
 
-        // DƏYİŞƏNLƏR (Yaddaşdan yüklənir)
+        // MƏLUMATLAR (Yaddaşdan)
         let balance = parseFloat(localStorage.getItem('balance')) || 0;
         let energy = parseInt(localStorage.getItem('energy')) || 500;
+        let maxEnergy = parseInt(localStorage.getItem('maxEnergy')) || 500;
         let level = parseInt(localStorage.getItem('level')) || 1;
-        let maxEnergy = 500;
         let earnPerTap = level; 
+        let levelThreshold = 5000 * Math.pow(2, level - 1);
 
-        // UI Yenilə
+        // UI Elementləri
+        const scoreEl = document.getElementById('score');
+        const ttScoreEl = document.getElementById('tt-score');
+        const wdScoreEl = document.getElementById('wd-score');
+        const energyEl = document.getElementById('energy');
+        const maxEnergyEl = document.getElementById('max-energy');
+        const perTapEl = document.getElementById('per-tap');
+        const levelReqEl = document.getElementById('next-level-req');
+        const levelNumEl = document.getElementById('level-num');
+        const progressFill = document.getElementById('progress-fill');
+        const shopModal = document.getElementById('shop-modal');
+
         function updateUI() {
-            document.getElementById('display-score').innerText = Math.floor(balance);
-            document.getElementById('w-score').innerText = Math.floor(balance);
-            document.getElementById('s-score').innerText = Math.floor(balance);
-            document.getElementById('energy').innerText = energy;
-            document.getElementById('level-display').innerText = "Lvl " + level;
+            let displayBalance = Math.floor(balance);
+            scoreEl.innerText = displayBalance;
+            ttScoreEl.innerText = displayBalance;
+            wdScoreEl.innerText = displayBalance;
             
+            energyEl.innerText = energy;
+            maxEnergyEl.innerText = maxEnergy;
+            perTapEl.innerText = "+" + earnPerTap;
+            
+            levelNumEl.innerText = `Səviyyə ${level}/10`;
+            levelReqEl.innerText = formatNumber(levelThreshold);
+
+            let percentage = (balance / levelThreshold) * 100;
+            if (percentage > 100) percentage = 100;
+            progressFill.style.width = percentage + "%";
+
             // Yadda saxla
             localStorage.setItem('balance', balance);
             localStorage.setItem('energy', energy);
+            localStorage.setItem('maxEnergy', maxEnergy);
             localStorage.setItem('level', level);
         }
 
-        // TIKLAMA
         function tikla(event) {
-            if (energy <= 0) return;
+            if (energy <= 0) {
+                if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('error');
+                return;
+            }
             
             energy -= 1;
             balance += earnPerTap;
-            
-            // Level Sistemi (Hər 5000 xalda level artır)
-            if (balance > level * 5000) {
+
+            if (balance >= levelThreshold) {
                 level++;
                 earnPerTap++;
-                alert(`Level Up! İndi Lvl ${level}`);
+                levelThreshold *= 2;
+                if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+                alert(`Təbriklər! Səviyyə ${level} oldunuz!`);
             }
 
             updateUI();
-
-            // Animasiya
+            
             if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
+            
+            // Animasiya
             let floatText = document.createElement("div");
             floatText.className = "floating-text";
             floatText.innerText = "+" + earnPerTap;
-            let x = event.clientX; let y = event.clientY;
+            let rect = event.currentTarget.getBoundingClientRect();
+            let x = event.clientX || (rect.left + rect.width / 2);
+            let y = event.clientY || (rect.top + rect.height / 2);
             floatText.style.left = x + "px"; floatText.style.top = y + "px";
             document.body.appendChild(floatText);
             setTimeout(() => floatText.remove(), 800);
         }
 
-        // ENERJİ BƏRPASI
-        setInterval(() => {
-            if (energy < maxEnergy) {
-                energy++;
+        function buyMaxEnergy() {
+            if (balance >= 500) {
+                balance -= 500;
+                maxEnergy += 500;
+                energy = maxEnergy;
                 updateUI();
+                closeShop();
+                if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+            } else {
+                tg.showAlert("❌ Balans kifayət etmir!");
             }
+        }
+
+        function buyItem(type, price, name) {
+            if (balance >= price) {
+                balance -= price;
+                updateUI();
+                
+                let data = { action: type, amount: price, item: name };
+                tg.sendData(JSON.stringify(data));
+            } else {
+                tg.showAlert("❌ Balans kifayət etmir!");
+            }
+        }
+
+        // Ekran Dəyişmə
+        function switchScreen(screenName, btn) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById('screen-' + screenName).classList.add('active');
+            
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            if(btn) btn.classList.add('active');
+            else document.querySelectorAll('.nav-item')[0].classList.add('active');
+        }
+
+        function openShop() { shopModal.classList.add('open'); }
+        function closeShop() { shopModal.classList.remove('open'); }
+
+        function formatNumber(num) {
+            if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+            if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
+            return num;
+        }
+
+        setInterval(() => {
+            if (energy < maxEnergy) { energy++; updateUI(); }
         }, 1000);
-
-        // TAB DƏYİŞMƏK
-        function switchTab(tabName, element) {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-            document.getElementById('tab-' + tabName).classList.add('active');
-            
-            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-            element.classList.add('active');
-        }
-
-        // ALIŞ-VERİŞ (Botla əlaqə)
-        function buyItem(type, price, itemName) {
-            if (balance < price) {
-                tg.showAlert("❌ Balansınız kifayət etmir!");
-                return;
-            }
-
-            // Balansdan çıxırıq
-            balance -= price;
-            updateUI();
-
-            // Bota məlumat göndəririk
-            let data = {
-                action: type, // 'withdraw' və ya 'tiktok'
-                amount: price,
-                item: itemName
-            };
-            
-            tg.sendData(JSON.stringify(data));
-        }
 
         updateUI();
     </script>
