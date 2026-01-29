@@ -21,195 +21,141 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* YUXARI HİSSƏ (BAŞLIQ) */
-        .header {
-            margin-top: 15px;
-            text-align: center;
-            text-transform: uppercase;
-        }
+        /* YUXARI HİSSƏ */
+        .header { margin-top: 15px; text-align: center; text-transform: uppercase; }
         .header h1 { margin: 0; font-size: 24px; font-weight: 800; letter-spacing: 1px; }
         .header h2 { margin: 0; font-size: 14px; color: #aaa; margin-bottom: 15px; }
 
-        /* STATİSTİKA QUTULARI */
-        .stats-container {
-            display: flex;
-            justify-content: space-between;
-            width: 90%;
-            margin-bottom: 20px;
-        }
-        .stat-box {
-            background: #252525;
-            border-radius: 10px;
-            width: 32%;
-            padding: 10px 5px;
-            text-align: center;
-            font-size: 10px;
-            color: #888;
-        }
-        .stat-value {
-            display: block;
-            font-size: 14px;
-            color: white;
-            font-weight: bold;
-            margin-top: 4px;
-        }
+        /* STATİSTİKA */
+        .stats-container { display: flex; justify-content: space-between; width: 90%; margin-bottom: 20px; }
+        .stat-box { background: #252525; border-radius: 10px; width: 32%; padding: 10px 5px; text-align: center; font-size: 10px; color: #888; }
+        .stat-value { display: block; font-size: 14px; color: white; font-weight: bold; margin-top: 4px; }
         .yellow-text { color: #f0b90b; }
 
-        /* BALANS VƏ LEVEL */
+        /* BALANS */
         .balance-container { text-align: center; margin-bottom: 10px; }
         .coin-icon { width: 30px; vertical-align: middle; margin-right: 5px; }
         .balance-text { font-size: 32px; font-weight: bold; vertical-align: middle; }
         
+        /* PROGRESS BAR (LEVEL) */
         .progress-container { width: 90%; margin-bottom: 20px; }
         .progress-labels { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 5px; color: #ccc; }
         .progress-bar-bg { width: 100%; height: 8px; background: #333; border-radius: 5px; overflow: hidden; }
-        .progress-bar-fill { width: 20%; height: 100%; background: linear-gradient(90deg, #6fdc72, #2ecc71); }
+        .progress-bar-fill { width: 0%; height: 100%; background: linear-gradient(90deg, #6fdc72, #2ecc71); transition: width 0.3s; }
 
         /* ORTA (HAMSTER) */
-        .main-game {
-            flex-grow: 1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            position: relative;
-            width: 100%;
-        }
-        
-        .hamster-bg-glow {
-            position: absolute;
-            width: 280px;
-            height: 280px;
-            background: radial-gradient(circle, rgba(62, 88, 148, 0.6) 0%, rgba(0,0,0,0) 70%);
-            border-radius: 50%;
-            z-index: 1;
-        }
-
-        .hamster-btn {
-            position: relative;
-            z-index: 2;
-            width: 240px;
-            cursor: pointer;
-            transition: transform 0.1s;
-        }
+        .main-game { flex-grow: 1; display: flex; justify-content: center; align-items: center; position: relative; width: 100%; }
+        .hamster-bg-glow { position: absolute; width: 280px; height: 280px; background: radial-gradient(circle, rgba(62, 88, 148, 0.6) 0%, rgba(0,0,0,0) 70%); border-radius: 50%; z-index: 1; }
+        .hamster-btn { position: relative; z-index: 2; width: 240px; cursor: pointer; transition: transform 0.1s; }
         .hamster-btn:active { transform: scale(0.95); }
-        .hamster-img { width: 100%; pointer-events: none; }
+        .hamster-img { width: 100%; pointer-events: none; border-radius: 50%; }
 
-        /* FLOATING TEXT (+1) */
-        .floating-text {
-            position: absolute;
-            color: white;
-            font-size: 24px;
-            font-weight: bold;
-            pointer-events: none;
-            animation: floatUp 0.8s ease-out forwards;
-            z-index: 10;
-        }
-        @keyframes floatUp {
-            0% { transform: translateY(0); opacity: 1; }
-            100% { transform: translateY(-80px); opacity: 0; }
-        }
+        /* +1 ANIMASIYA */
+        .floating-text { position: absolute; color: white; font-size: 28px; font-weight: bold; pointer-events: none; animation: floatUp 0.8s ease-out forwards; z-index: 10; text-shadow: 0 0 5px black; }
+        @keyframes floatUp { 0% { transform: translateY(0); opacity: 1; } 100% { transform: translateY(-100px); opacity: 0; } }
 
-        /* SAĞ TƏRƏF MENYU (Video Icon) */
-        .floating-side-btn {
-            position: absolute;
-            right: 20px;
-            top: 40%;
-            background: #252525;
-            padding: 10px;
-            border-radius: 10px;
-            text-align: center;
-            border: 1px solid #333;
-        }
-        .side-icon { font-size: 20px; margin-bottom: 2px; }
-        .side-text { font-size: 10px; display: block; }
+        /* ENERJİ */
+        .energy-info { width: 90%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-size: 14px; font-weight: bold; }
+        .rocket-icon { margin-left: auto; color: #8a8a8a; }
 
-        /* AŞAĞI MƏLUMAT (ENERGY) */
-        .energy-info {
-            width: 90%;
+        /* MENYU */
+        .navbar { width: 90%; background: #1c1c1e; padding: 10px 0; border-radius: 15px; display: flex; justify-content: space-around; margin-bottom: 15px; z-index: 20; position: relative;}
+        .nav-item { text-align: center; color: #666; font-size: 10px; cursor: pointer; }
+        .nav-item.active { color: #f0b90b; } /* Aktiv menyu sarı olsun */
+        .nav-icon { font-size: 18px; margin-bottom: 3px; display: block; }
+
+        /* MAĞAZA (SHOP MODAL) */
+        .shop-modal {
+            position: fixed;
+            bottom: -100%; /* Gizli başla */
+            left: 0;
+            width: 100%;
+            height: 70%;
+            background: #1c1c1e;
+            border-top-left-radius: 20px;
+            border-top-right-radius: 20px;
+            transition: bottom 0.3s ease-in-out;
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 20px;
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.5);
+        }
+        .shop-modal.open { bottom: 0; }
+        .shop-item {
+            width: 85%;
+            background: #2c2c2e;
+            padding: 15px;
+            border-radius: 15px;
+            margin-bottom: 10px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 10px;
-            font-size: 14px;
+        }
+        .shop-btn {
+            background: #f0b90b;
+            color: black;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 8px;
             font-weight: bold;
-        }
-        .energy-val { display: flex; align-items: center; }
-        .rocket-icon { margin-left: auto; color: #8a8a8a; }
-
-        /* BOTTOM NAV BAR */
-        .navbar {
-            width: 90%;
-            background: #1c1c1e;
-            padding: 10px 0;
-            border-radius: 15px;
-            display: flex;
-            justify-content: space-around;
-            margin-bottom: 15px;
-        }
-        .nav-item {
-            text-align: center;
-            color: #666;
-            font-size: 10px;
             cursor: pointer;
         }
-        .nav-item.active { color: white; }
-        .nav-icon { font-size: 18px; margin-bottom: 3px; display: block; }
+        .shop-btn:disabled { background: #555; color: #888; }
+        .close-shop {
+            position: absolute; top: 10px; right: 20px; font-size: 24px; cursor: pointer;
+        }
 
     </style>
 </head>
 <body>
 
     <div class="header">
-        <h1>LEVEL UP</h1>
-        <h2>YOUR HAMSTERS</h2>
+        <h1>HAMSTER LEVEL UP</h1>
     </div>
 
     <div class="stats-container">
         <div class="stat-box">
             Earn per tap
-            <span class="stat-value yellow-text"><img src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png" width="10"> +1</span>
+            <span class="stat-value yellow-text" id="per-tap">+1</span>
         </div>
         <div class="stat-box">
             Coins to level up
-            <span class="stat-value text-blue">5K</span>
+            <span class="stat-value text-blue" id="next-level-req">5K</span>
         </div>
         <div class="stat-box">
             Profit per hour
-            <span class="stat-value yellow-text"><img src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png" width="10"> +0</span>
+            <span class="stat-value yellow-text">+0</span>
         </div>
     </div>
 
     <div class="balance-container">
         <img src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png" class="coin-icon">
-        <span class="balance-text" id="score">501</span>
+        <span class="balance-text" id="score">0</span>
     </div>
 
     <div class="progress-container">
         <div class="progress-labels">
-            <span>Bronze</span>
-            <span>Level 1/10</span>
+            <span id="level-name">Bronze</span>
+            <span id="level-num">Level 1/10</span>
         </div>
         <div class="progress-bar-bg">
-            <div class="progress-bar-fill"></div>
+            <div class="progress-bar-fill" id="progress-fill"></div>
         </div>
     </div>
 
     <div class="main-game">
         <div class="hamster-bg-glow"></div>
-        
         <div class="hamster-btn" onclick="tikla(event)">
             <img src="https://i.pinimg.com/originals/82/20/f7/8220f772439396d396032483d7395066.png" class="hamster-img" alt="Hamster">
-        </div>
-
-        <div class="floating-side-btn">
-            <i class="fas fa-film side-icon"></i>
-            <span class="side-text">+10k</span>
         </div>
     </div>
 
     <div class="energy-info">
         <div class="energy-val">
-            <i class="fas fa-bolt yellow-text" style="margin-right:5px;"></i> 500 / 500
+            <i class="fas fa-bolt yellow-text" style="margin-right:5px;"></i> 
+            <span id="energy">500</span> / <span id="max-energy">500</span>
         </div>
         <div class="rocket-icon">
             <i class="fas fa-rocket"></i> Boost
@@ -217,10 +163,10 @@
     </div>
 
     <div class="navbar">
-        <div class="nav-item active">
+        <div class="nav-item active" onclick="closeShop()">
             <i class="fas fa-home nav-icon"></i> Home
         </div>
-        <div class="nav-item">
+        <div class="nav-item" onclick="openShop()">
             <i class="fas fa-hammer nav-icon"></i> Main
         </div>
         <div class="nav-item">
@@ -229,47 +175,160 @@
         <div class="nav-item">
             <i class="fas fa-coins nav-icon"></i> Earn
         </div>
-        <div class="nav-item">
-            <img src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png" width="18" style="margin-bottom:3px;"> Airdrop
+    </div>
+
+    <div class="shop-modal" id="shop">
+        <div class="close-shop" onclick="closeShop()">&times;</div>
+        <h2>Mağaza (Market)</h2>
+        <p style="color:#aaa; margin-bottom: 20px;">Qazandığın pulları xərclə!</p>
+
+        <div class="shop-item">
+            <div>
+                <div style="font-weight:bold; font-size:14px;">Enerji Çəni (+500)</div>
+                <div style="font-size:12px; color:#aaa;">Max enerjini artırır</div>
+            </div>
+            <button class="shop-btn" id="btn-buy-energy" onclick="buyMaxEnergy()">
+                <img src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png" width="12"> 500
+            </button>
         </div>
     </div>
 
     <script>
-        // Telegram ekranını genişləndirir
         let tg = window.Telegram.WebApp;
         tg.expand();
 
-        let bakiye = 501;
+        // OYUN DƏYİŞƏNLƏRİ
+        let balance = 0;
+        let energy = 500;
+        let maxEnergy = 500;
+        let level = 1;
+        let earnPerTap = 1;
+        let levelThreshold = 5000; // Növbəti level üçün lazım olan
+        
+        // Elementləri seçirik
+        const scoreEl = document.getElementById('score');
+        const energyEl = document.getElementById('energy');
+        const maxEnergyEl = document.getElementById('max-energy');
+        const progressFill = document.getElementById('progress-fill');
+        const levelNumEl = document.getElementById('level-num');
+        const levelReqEl = document.getElementById('next-level-req');
+        const perTapEl = document.getElementById('per-tap');
+        const shopModal = document.getElementById('shop');
 
+        // TIKLAMA FUNKSİYASI
         function tikla(event) {
-            // Bakiyeni artır
-            bakiye += 1;
-            document.getElementById('score').innerText = bakiye;
-
-            // Haptic Feedback (Telefon titrəməsi) - Çox keyfiyyətli hiss verir
-            if (tg.HapticFeedback) {
-                tg.HapticFeedback.impactOccurred('medium');
+            // Enerji yoxdursa işləməsin
+            if (energy <= 0) {
+                if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('error');
+                return;
             }
 
-            // Animasiya (+1 yazısı)
+            // Hesablama
+            energy -= 1;
+            balance += earnPerTap;
+
+            // UI Yenilə
+            updateUI();
+            checkLevelUp();
+
+            // Titrəyiş
+            if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
+
+            // Uçan yazı (+1)
+            showFloatingText(event);
+        }
+
+        // LEVEL SİSTEMİ
+        function checkLevelUp() {
+            if (balance >= levelThreshold) {
+                level++;
+                levelThreshold *= 2; // Növbəti level 10k, sonra 20k...
+                earnPerTap += 1; // Vuruş gücü artır (1 -> 2 -> 3)
+                
+                // Təbrik effekti (sadə)
+                if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+                alert(`Təbriklər! Level ${level} oldunuz! İndi vuruş başına +${earnPerTap} qazanırsınız.`);
+            }
+        }
+
+        // EKRANI YENİLƏ
+        function updateUI() {
+            scoreEl.innerText = Math.floor(balance);
+            energyEl.innerText = energy;
+            maxEnergyEl.innerText = maxEnergy;
+            levelNumEl.innerText = `Level ${level}/10`;
+            levelReqEl.innerText = formatNumber(levelThreshold);
+            perTapEl.innerText = "+" + earnPerTap;
+
+            // Progress bar
+            let percentage = (balance / levelThreshold) * 100;
+            if (percentage > 100) percentage = 100;
+            progressFill.style.width = percentage + "%";
+
+            // Mağaza düymələrini yoxla (Pul çatırsa aktiv et)
+            let cost = 500; // Enerji artırma qiyməti
+            let btn = document.getElementById('btn-buy-energy');
+            if(balance >= cost) btn.disabled = false;
+            else btn.disabled = true;
+        }
+
+        // MAĞAZA: MAX ENERJİ ALMAQ
+        function buyMaxEnergy() {
+            let cost = 500;
+            if (balance >= cost) {
+                balance -= cost;
+                maxEnergy += 500;
+                energy = maxEnergy; // Enerjini də doldur
+                updateUI();
+                closeShop();
+                if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+            }
+        }
+
+        // UÇAN YAZI (+1)
+        function showFloatingText(event) {
             let floatText = document.createElement("div");
             floatText.className = "floating-text";
-            floatText.innerText = "+1";
+            floatText.innerText = "+" + earnPerTap;
             
-            // Koordinatları al
             let rect = event.currentTarget.getBoundingClientRect();
-            let x = event.clientX;
-            let y = event.clientY;
+            // Tıkladığın yerə uyğun çıxsın
+            let x = event.clientX || (rect.left + rect.width / 2);
+            let y = event.clientY || (rect.top + rect.height / 2);
             
-            // Yazını yerləşdir
             floatText.style.left = x + "px";
             floatText.style.top = y + "px";
             
             document.body.appendChild(floatText);
-
-            // Yazını sil
-            setTimeout(() => { floatText.remove(); }, 800);
+            setTimeout(() => floatText.remove(), 800);
         }
+
+        // ENERJİ BƏRPASI (Hər saniyə +1)
+        setInterval(() => {
+            if (energy < maxEnergy) {
+                energy++;
+                energyEl.innerText = energy;
+            }
+        }, 1000);
+
+        // MAĞAZANI AÇ/BAĞLA
+        function openShop() {
+            shopModal.classList.add('open');
+        }
+        function closeShop() {
+            shopModal.classList.remove('open');
+        }
+
+        // Rəqəmləri qısaltmaq (1000 -> 1K)
+        function formatNumber(num) {
+            if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+            if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
+            return num;
+        }
+
+        // Başlanğıcda UI yenilə
+        updateUI();
+
     </script>
 </body>
 </html>
