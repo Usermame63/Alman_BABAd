@@ -21,25 +21,6 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* YADDA SAXLA DÜYMƏSİ (YENİ) */
-        .save-btn {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            background: #ff0000;
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 8px;
-            font-weight: bold;
-            font-size: 11px;
-            cursor: pointer;
-            z-index: 1000;
-            box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
-            animation: pulse 2s infinite;
-        }
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.7; } 100% { opacity: 1; } }
-
         /* YUXARI HİSSƏ */
         .header { margin-top: 15px; text-align: center; text-transform: uppercase; }
         .header h1 { margin: 0; font-size: 22px; font-weight: 800; letter-spacing: 1px; color: #f0b90b; }
@@ -48,7 +29,7 @@
         .screen { display: none; width: 100%; flex-direction: column; align-items: center; height: 100%; overflow-y: auto; padding-bottom: 90px; }
         .screen.active { display: flex; }
 
-        /* STATİSTİKA (Yalnız Ana Ekranda) */
+        /* STATİSTİKA */
         .stats-container { display: flex; justify-content: space-between; width: 92%; margin-bottom: 10px; margin-top: 10px; }
         .stat-box { background: #252525; border-radius: 10px; width: 32%; padding: 8px 5px; text-align: center; font-size: 10px; color: #888; }
         .stat-value { display: block; font-size: 13px; color: white; font-weight: bold; margin-top: 4px; }
@@ -73,7 +54,7 @@
         .hamster-btn:active { transform: scale(0.95); }
         .hamster-img { width: 100%; pointer-events: none; border-radius: 50%; border: 4px solid #f0b90b; box-shadow: 0 0 20px #f0b90b; }
 
-        /* MINING CARDS (YENİ MAĞAZA DİZAYNI) */
+        /* MINING CARDS */
         .mining-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 92%; margin-top: 10px; }
         .mine-card { 
             background: #252525; border-radius: 12px; padding: 10px; 
@@ -109,8 +90,6 @@
     </style>
 </head>
 <body>
-
-    <button class="save-btn" onclick="saveGame()">💾 YADDA SAXLA</button>
 
     <div id="screen-home" class="screen active">
         <div class="header"><h1>Hamster Tycoon AZ</h1></div>
@@ -215,13 +194,12 @@
         let tg = window.Telegram.WebApp;
         tg.expand();
 
-        // --- 1. BOTDAN GƏLƏN LİNKİ OXU ---
+        // 1. URL-dən Botun Göndərdiyi Məlumatı Oxuyuruq
         const urlParams = new URLSearchParams(window.location.search);
         let startBalance = parseFloat(urlParams.get('balance'));
         let startLevel = parseInt(urlParams.get('level'));
 
-        // --- 2. ƏSAS DƏYİŞƏNLƏR ---
-        // Əgər linkdə məlumat varsa ordan götür, yoxdursa telefondan (Local Storage)
+        // 2. Əsas Dəyişənlər (URL varsa ordan, yoxdursa Yaddaşdan)
         let balance = !isNaN(startBalance) ? startBalance : (parseFloat(localStorage.getItem('balance')) || 0);
         let level = !isNaN(startLevel) ? startLevel : (parseInt(localStorage.getItem('level')) || 1);
         
@@ -229,7 +207,6 @@
         let earnPerTap = level; 
         let levelThreshold = 5000 * Math.pow(2, level - 1);
         
-        // UPGRADES SİSTEMİ
         let defaultUpgrades = [
             { id: 'fan', name: 'Fanat', cost: 200, profit: 40, level: 0, icon: 'fa-fan' },
             { id: 'cpu', name: 'CPU', cost: 500, profit: 100, level: 0, icon: 'fa-microchip' },
@@ -270,7 +247,6 @@
             energyEl.innerText = energy;
             perTapEl.innerText = "+" + earnPerTap;
             profitEl.innerText = "+" + formatNumber(profitPerHour);
-            
             levelNumEl.innerText = `Səviyyə ${level}/10`;
             levelReqEl.innerText = formatNumber(levelThreshold);
 
@@ -278,21 +254,11 @@
             if (percentage > 100) percentage = 100;
             progressFill.style.width = percentage + "%";
 
-            // Yadda saxla
+            // AVTOMATİK TELEFON YADDAŞINA YAZIR (BU SƏNİN İSTƏDİYİN "OTO KAYD"DIR)
             localStorage.setItem('balance', balance);
             localStorage.setItem('energy', energy);
             localStorage.setItem('level', level);
             localStorage.setItem('upgrades', JSON.stringify(upgrades));
-        }
-
-        // --- YADDA SAXLA FUNKSİYASI (BOTA GÖNDƏRİR) ---
-        function saveGame() {
-            let data = {
-                action: 'save_game',
-                balance: balance,
-                level: level
-            };
-            tg.sendData(JSON.stringify(data));
         }
 
         // MAĞAZA KARTLARINI YARAT
@@ -352,7 +318,7 @@
                 alert(`Təbriklər! Səviyyə ${level} oldunuz!`);
             }
 
-            updateUI();
+            updateUI(); // Burda yaddaşa yazır (Local Storage)
             
             if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
             
@@ -371,6 +337,8 @@
             if (balance >= price) {
                 balance -= price;
                 updateUI();
+                
+                // Məlumatı Bota Göndəririk (JSON yenilənir)
                 let data = { action: type, amount: price, item: name };
                 tg.sendData(JSON.stringify(data));
             } else {
