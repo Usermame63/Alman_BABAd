@@ -1,90 +1,274 @@
 <!DOCTYPE html>
-<html lang="az">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Hamster BTC Clicker</title>
+    <title>Hamster Kombat Clone</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         body {
-            background-color: #1a1a1a;
+            background-color: #000;
             color: white;
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
-            height: 100vh;
-            margin: 0;
             overflow: hidden;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
         }
-        h1 { margin-top: 20px; font-size: 24px; color: #f0b90b; }
-        .score { font-size: 36px; font-weight: bold; margin-bottom: 20px; }
-        .hamster-container {
-            position: relative;
-            width: 250px;
-            height: 250px;
-            border-radius: 50%;
-            background: radial-gradient(circle, #2a2a2a, #000);
+
+        /* YUXARI HİSSƏ (BAŞLIQ) */
+        .header {
+            margin-top: 15px;
+            text-align: center;
+            text-transform: uppercase;
+        }
+        .header h1 { margin: 0; font-size: 24px; font-weight: 800; letter-spacing: 1px; }
+        .header h2 { margin: 0; font-size: 14px; color: #aaa; margin-bottom: 15px; }
+
+        /* STATİSTİKA QUTULARI */
+        .stats-container {
+            display: flex;
+            justify-content: space-between;
+            width: 90%;
+            margin-bottom: 20px;
+        }
+        .stat-box {
+            background: #252525;
+            border-radius: 10px;
+            width: 32%;
+            padding: 10px 5px;
+            text-align: center;
+            font-size: 10px;
+            color: #888;
+        }
+        .stat-value {
+            display: block;
+            font-size: 14px;
+            color: white;
+            font-weight: bold;
+            margin-top: 4px;
+        }
+        .yellow-text { color: #f0b90b; }
+
+        /* BALANS VƏ LEVEL */
+        .balance-container { text-align: center; margin-bottom: 10px; }
+        .coin-icon { width: 30px; vertical-align: middle; margin-right: 5px; }
+        .balance-text { font-size: 32px; font-weight: bold; vertical-align: middle; }
+        
+        .progress-container { width: 90%; margin-bottom: 20px; }
+        .progress-labels { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 5px; color: #ccc; }
+        .progress-bar-bg { width: 100%; height: 8px; background: #333; border-radius: 5px; overflow: hidden; }
+        .progress-bar-fill { width: 20%; height: 100%; background: linear-gradient(90deg, #6fdc72, #2ecc71); }
+
+        /* ORTA (HAMSTER) */
+        .main-game {
+            flex-grow: 1;
             display: flex;
             justify-content: center;
             align-items: center;
-            box-shadow: 0 0 30px #f0b90b;
+            position: relative;
+            width: 100%;
+        }
+        
+        .hamster-bg-glow {
+            position: absolute;
+            width: 280px;
+            height: 280px;
+            background: radial-gradient(circle, rgba(62, 88, 148, 0.6) 0%, rgba(0,0,0,0) 70%);
+            border-radius: 50%;
+            z-index: 1;
+        }
+
+        .hamster-btn {
+            position: relative;
+            z-index: 2;
+            width: 240px;
             cursor: pointer;
             transition: transform 0.1s;
         }
-        .hamster-container:active { transform: scale(0.95); }
-        .hamster-img { width: 200px; height: 200px; pointer-events: none; }
+        .hamster-btn:active { transform: scale(0.95); }
+        .hamster-img { width: 100%; pointer-events: none; }
+
+        /* FLOATING TEXT (+1) */
         .floating-text {
             position: absolute;
-            color: #fff;
-            font-weight: bold;
+            color: white;
             font-size: 24px;
+            font-weight: bold;
             pointer-events: none;
-            animation: floatUp 1s ease-out forwards;
+            animation: floatUp 0.8s ease-out forwards;
+            z-index: 10;
         }
         @keyframes floatUp {
             0% { transform: translateY(0); opacity: 1; }
-            100% { transform: translateY(-100px); opacity: 0; }
+            100% { transform: translateY(-80px); opacity: 0; }
         }
+
+        /* SAĞ TƏRƏF MENYU (Video Icon) */
+        .floating-side-btn {
+            position: absolute;
+            right: 20px;
+            top: 40%;
+            background: #252525;
+            padding: 10px;
+            border-radius: 10px;
+            text-align: center;
+            border: 1px solid #333;
+        }
+        .side-icon { font-size: 20px; margin-bottom: 2px; }
+        .side-text { font-size: 10px; display: block; }
+
+        /* AŞAĞI MƏLUMAT (ENERGY) */
+        .energy-info {
+            width: 90%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        .energy-val { display: flex; align-items: center; }
+        .rocket-icon { margin-left: auto; color: #8a8a8a; }
+
+        /* BOTTOM NAV BAR */
+        .navbar {
+            width: 90%;
+            background: #1c1c1e;
+            padding: 10px 0;
+            border-radius: 15px;
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 15px;
+        }
+        .nav-item {
+            text-align: center;
+            color: #666;
+            font-size: 10px;
+            cursor: pointer;
+        }
+        .nav-item.active { color: white; }
+        .nav-icon { font-size: 18px; margin-bottom: 3px; display: block; }
+
     </style>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
 
-    <h1>HAMSTER BTC MINER</h1>
-    <div class="score" id="score">0.000000 BTC</div>
+    <div class="header">
+        <h1>LEVEL UP</h1>
+        <h2>YOUR HAMSTERS</h2>
+    </div>
 
-    <div class="hamster-container" onclick="tikla(event)">
-        <img src="https://cdn-icons-png.flaticon.com/512/3069/3069172.png" alt="Hamster" class="hamster-img">
+    <div class="stats-container">
+        <div class="stat-box">
+            Earn per tap
+            <span class="stat-value yellow-text"><img src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png" width="10"> +1</span>
+        </div>
+        <div class="stat-box">
+            Coins to level up
+            <span class="stat-value text-blue">5K</span>
+        </div>
+        <div class="stat-box">
+            Profit per hour
+            <span class="stat-value yellow-text"><img src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png" width="10"> +0</span>
+        </div>
+    </div>
+
+    <div class="balance-container">
+        <img src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png" class="coin-icon">
+        <span class="balance-text" id="score">501</span>
+    </div>
+
+    <div class="progress-container">
+        <div class="progress-labels">
+            <span>Bronze</span>
+            <span>Level 1/10</span>
+        </div>
+        <div class="progress-bar-bg">
+            <div class="progress-bar-fill"></div>
+        </div>
+    </div>
+
+    <div class="main-game">
+        <div class="hamster-bg-glow"></div>
+        
+        <div class="hamster-btn" onclick="tikla(event)">
+            <img src="https://i.pinimg.com/originals/82/20/f7/8220f772439396d396032483d7395066.png" class="hamster-img" alt="Hamster">
+        </div>
+
+        <div class="floating-side-btn">
+            <i class="fas fa-film side-icon"></i>
+            <span class="side-text">+10k</span>
+        </div>
+    </div>
+
+    <div class="energy-info">
+        <div class="energy-val">
+            <i class="fas fa-bolt yellow-text" style="margin-right:5px;"></i> 500 / 500
+        </div>
+        <div class="rocket-icon">
+            <i class="fas fa-rocket"></i> Boost
+        </div>
+    </div>
+
+    <div class="navbar">
+        <div class="nav-item active">
+            <i class="fas fa-home nav-icon"></i> Home
+        </div>
+        <div class="nav-item">
+            <i class="fas fa-hammer nav-icon"></i> Main
+        </div>
+        <div class="nav-item">
+            <i class="fas fa-user-friends nav-icon"></i> Share
+        </div>
+        <div class="nav-item">
+            <i class="fas fa-coins nav-icon"></i> Earn
+        </div>
+        <div class="nav-item">
+            <img src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png" width="18" style="margin-bottom:3px;"> Airdrop
+        </div>
     </div>
 
     <script>
+        // Telegram ekranını genişləndirir
         let tg = window.Telegram.WebApp;
-        tg.expand(); // Ekranı tam açır
+        tg.expand();
 
-        let bakiye = 0.000000;
-        
+        let bakiye = 501;
+
         function tikla(event) {
             // Bakiyeni artır
-            bakiye += 0.000010;
-            document.getElementById('score').innerText = bakiye.toFixed(6) + " BTC";
+            bakiye += 1;
+            document.getElementById('score').innerText = bakiye;
 
-            // Animasiya (+1 BTC yazısı uçsun)
-            let floatingText = document.createElement("div");
-            floatingText.className = "floating-text";
-            floatingText.innerText = "+0.00001";
-            
-            // Tıkladığın yerdə çıxsın
-            let rect = event.target.getBoundingClientRect();
-            let x = event.clientX - rect.left;
-            let y = event.clientY - rect.top;
-            
-            floatingText.style.left = x + "px";
-            floatingText.style.top = y + "px";
-            
-            event.currentTarget.appendChild(floatingText);
+            // Haptic Feedback (Telefon titrəməsi) - Çox keyfiyyətli hiss verir
+            if (tg.HapticFeedback) {
+                tg.HapticFeedback.impactOccurred('medium');
+            }
 
-            // 1 saniyə sonra yazını sil
-            setTimeout(() => { floatingText.remove(); }, 1000);
+            // Animasiya (+1 yazısı)
+            let floatText = document.createElement("div");
+            floatText.className = "floating-text";
+            floatText.innerText = "+1";
+            
+            // Koordinatları al
+            let rect = event.currentTarget.getBoundingClientRect();
+            let x = event.clientX;
+            let y = event.clientY;
+            
+            // Yazını yerləşdir
+            floatText.style.left = x + "px";
+            floatText.style.top = y + "px";
+            
+            document.body.appendChild(floatText);
+
+            // Yazını sil
+            setTimeout(() => { floatText.remove(); }, 800);
         }
     </script>
 </body>
