@@ -21,6 +21,25 @@
             -webkit-tap-highlight-color: transparent;
         }
 
+        /* YADDA SAXLA DÜYMƏSİ (YENİ) */
+        .save-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: #ff0000;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 11px;
+            cursor: pointer;
+            z-index: 1000;
+            box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.7; } 100% { opacity: 1; } }
+
         /* YUXARI HİSSƏ */
         .header { margin-top: 15px; text-align: center; text-transform: uppercase; }
         .header h1 { margin: 0; font-size: 22px; font-weight: 800; letter-spacing: 1px; color: #f0b90b; }
@@ -90,6 +109,8 @@
     </style>
 </head>
 <body>
+
+    <button class="save-btn" onclick="saveGame()">💾 YADDA SAXLA</button>
 
     <div id="screen-home" class="screen active">
         <div class="header"><h1>Hamster Tycoon AZ</h1></div>
@@ -194,15 +215,21 @@
         let tg = window.Telegram.WebApp;
         tg.expand();
 
-        // MƏLUMATLAR
-        let balance = parseFloat(localStorage.getItem('balance')) || 0;
+        // --- 1. BOTDAN GƏLƏN LİNKİ OXU ---
+        const urlParams = new URLSearchParams(window.location.search);
+        let startBalance = parseFloat(urlParams.get('balance'));
+        let startLevel = parseInt(urlParams.get('level'));
+
+        // --- 2. ƏSAS DƏYİŞƏNLƏR ---
+        // Əgər linkdə məlumat varsa ordan götür, yoxdursa telefondan (Local Storage)
+        let balance = !isNaN(startBalance) ? startBalance : (parseFloat(localStorage.getItem('balance')) || 0);
+        let level = !isNaN(startLevel) ? startLevel : (parseInt(localStorage.getItem('level')) || 1);
+        
         let energy = parseInt(localStorage.getItem('energy')) || 500;
-        let level = parseInt(localStorage.getItem('level')) || 1;
         let earnPerTap = level; 
         let levelThreshold = 5000 * Math.pow(2, level - 1);
         
-        // UPGRADES SİSTEMİ (PASİF GƏLİR)
-        // Format: ID, Ad, Başlanğıc Qiymət, Başlanğıc Gəlir, İkon
+        // UPGRADES SİSTEMİ
         let defaultUpgrades = [
             { id: 'fan', name: 'Fanat', cost: 200, profit: 40, level: 0, icon: 'fa-fan' },
             { id: 'cpu', name: 'CPU', cost: 500, profit: 100, level: 0, icon: 'fa-microchip' },
@@ -258,15 +285,21 @@
             localStorage.setItem('upgrades', JSON.stringify(upgrades));
         }
 
+        // --- YADDA SAXLA FUNKSİYASI (BOTA GÖNDƏRİR) ---
+        function saveGame() {
+            let data = {
+                action: 'save_game',
+                balance: balance,
+                level: level
+            };
+            tg.sendData(JSON.stringify(data));
+        }
+
         // MAĞAZA KARTLARINI YARAT
         function renderUpgrades() {
             miningGrid.innerHTML = "";
             upgrades.forEach((item, index) => {
-                // Qiymət hər leveldə 1.5 dəfə artır
                 let currentCost = Math.floor(item.cost * Math.pow(1.5, item.level));
-                // Gəlir hər leveldə artır
-                let currentProfit = item.profit * (item.level + 1); 
-
                 let card = document.createElement('div');
                 card.className = 'mine-card';
                 card.onclick = () => buyUpgrade(index);
@@ -301,9 +334,6 @@
                 updateUI();
                 renderUpgrades();
                 if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
-                
-                // Show modal or alert
-                // alert(`Uğurlu! ${item.name} Lvl ${item.level} oldu.`);
             } else {
                 tg.showAlert("❌ Balans kifayət etmir!");
             }
@@ -365,7 +395,6 @@
         // PASİF GƏLİR TIMERI (Hər saniyə pul verir)
         setInterval(() => {
             if (profitPerHour > 0) {
-                // Saatlıq gəliri saniyəyə bölürük
                 let profitPerSecond = profitPerHour / 3600;
                 balance += profitPerSecond;
                 updateUI();
@@ -383,5 +412,3 @@
     </script>
 </body>
 </html>
-
-
