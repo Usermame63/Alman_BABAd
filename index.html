@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Hamster BTC Clicker</title>
+    <style>
+        body {
+            background-color: #1a1a1a;
+            color: white;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+        h1 { margin-top: 20px; font-size: 24px; color: #f0b90b; }
+        .score { font-size: 36px; font-weight: bold; margin-bottom: 20px; }
+        .hamster-container {
+            position: relative;
+            width: 250px;
+            height: 250px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #2a2a2a, #000);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 0 30px #f0b90b;
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+        .hamster-container:active { transform: scale(0.95); }
+        .hamster-img { width: 200px; height: 200px; pointer-events: none; }
+        .floating-text {
+            position: absolute;
+            color: #fff;
+            font-weight: bold;
+            font-size: 24px;
+            pointer-events: none;
+            animation: floatUp 1s ease-out forwards;
+        }
+        @keyframes floatUp {
+            0% { transform: translateY(0); opacity: 1; }
+            100% { transform: translateY(-100px); opacity: 0; }
+        }
+    </style>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+<body>
+
+    <h1>HAMSTER BTC MINER</h1>
+    <div class="score" id="score">0.000000 BTC</div>
+
+    <div class="hamster-container" onclick="tikla(event)">
+        <img src="https://cdn-icons-png.flaticon.com/512/3069/3069172.png" alt="Hamster" class="hamster-img">
+    </div>
+
+    <script>
+        let tg = window.Telegram.WebApp;
+        tg.expand(); // Ekranı tam açır
+
+        let bakiye = 0.000000;
+        
+        function tikla(event) {
+            // Bakiyeni artır
+            bakiye += 0.000010;
+            document.getElementById('score').innerText = bakiye.toFixed(6) + " BTC";
+
+            // Animasiya (+1 BTC yazısı uçsun)
+            let floatingText = document.createElement("div");
+            floatingText.className = "floating-text";
+            floatingText.innerText = "+0.00001";
+            
+            // Tıkladığın yerdə çıxsın
+            let rect = event.target.getBoundingClientRect();
+            let x = event.clientX - rect.left;
+            let y = event.clientY - rect.top;
+            
+            floatingText.style.left = x + "px";
+            floatingText.style.top = y + "px";
+            
+            event.currentTarget.appendChild(floatingText);
+
+            // 1 saniyə sonra yazını sil
+            setTimeout(() => { floatingText.remove(); }, 1000);
+        }
+    </script>
+</body>
+</html>
