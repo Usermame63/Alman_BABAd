@@ -54,9 +54,13 @@
         .hamster-btn:active { transform: scale(0.95); }
         .hamster-img { width: 100%; pointer-events: none; border-radius: 50%; border: 4px solid #f0b90b; box-shadow: 0 0 20px #f0b90b; }
 
-        /* KARTLAR VƏ GRIDLƏR */
+        /* MINING CARDS */
         .mining-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 92%; margin-top: 10px; }
-        .mine-card { background: #252525; border-radius: 12px; padding: 10px; display: flex; flex-direction: column; justify-content: space-between; border-bottom: 3px solid #1a1a1a; }
+        .mine-card { 
+            background: #252525; border-radius: 12px; padding: 10px; 
+            display: flex; flex-direction: column; justify-content: space-between;
+            border-bottom: 3px solid #1a1a1a;
+        }
         .mine-header { display: flex; align-items: center; margin-bottom: 5px; }
         .mine-icon { font-size: 24px; margin-right: 10px; color: #f0b90b; }
         .mine-title { font-size: 13px; font-weight: bold; line-height: 1.2; }
@@ -65,6 +69,7 @@
         .mine-lvl { font-size: 10px; font-weight: bold; }
         .mine-price { font-size: 12px; font-weight: bold; display: flex; align-items: center; }
         
+        /* SHOP & WITHDRAW GRIDS */
         .shop-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; width: 90%; margin-top: 20px; }
         .card { background: #1c1c1e; border-radius: 15px; padding: 15px; text-align: center; border: 1px solid #333; display: flex; flex-direction: column; justify-content: space-between; }
         .card h3 { font-size: 16px; margin: 5px 0; color: #fff; }
@@ -82,48 +87,50 @@
         .floating-text { position: absolute; color: white; font-size: 28px; font-weight: bold; pointer-events: none; animation: floatUp 0.8s ease-out forwards; z-index: 10; text-shadow: 0 0 5px black; }
         @keyframes floatUp { 0% { transform: translateY(0); opacity: 1; } 100% { transform: translateY(-100px); opacity: 0; } }
 
-        /* --- BURANI ƏLAVƏ ETDİM: MƏLUMAT GİRİŞ PƏNCƏRƏSİ (MODAL) --- */
+        /* MODAL (POPUP) DİZAYNI */
         .input-modal {
-            display: none; /* Başlanğıcda gizli */
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.8);
-            z-index: 2000;
-            justify-content: center;
-            align-items: center;
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8); z-index: 2000; justify-content: center; align-items: center;
         }
         .modal-content {
-            background: #252525;
-            padding: 20px;
-            border-radius: 15px;
-            width: 80%;
-            text-align: center;
-            border: 1px solid #f0b90b;
+            background: #252525; padding: 20px; border-radius: 15px; width: 80%; text-align: center; border: 1px solid #f0b90b;
         }
         .modal-input {
-            width: 90%;
-            padding: 10px;
-            margin: 15px 0;
-            border-radius: 8px;
-            border: none;
-            background: #333;
-            color: white;
-            font-size: 14px;
+            width: 90%; padding: 10px; margin: 15px 0; border-radius: 8px; border: none; background: #333; color: white; font-size: 14px;
         }
         .modal-btn {
-            padding: 10px 20px;
-            border-radius: 8px;
-            border: none;
-            font-weight: bold;
-            cursor: pointer;
-            margin: 5px;
+            padding: 10px 20px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; margin: 5px;
         }
         .confirm-btn { background: #f0b90b; color: black; }
         .cancel-btn { background: #444; color: white; }
 
+        /* --- YENİ: CANLI BİLDİRİŞ (TOAST) --- */
+        .live-toast {
+            position: fixed;
+            top: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 200, 0, 0.2);
+            border: 1px solid #00ff00;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: 12px;
+            font-weight: bold;
+            z-index: 3000;
+            display: none; /* JS ilə açılacaq */
+            backdrop-filter: blur(5px);
+            box-shadow: 0 0 15px rgba(0, 255, 0, 0.4);
+            white-space: nowrap;
+            animation: slideDown 0.5s ease-out;
+        }
+        @keyframes slideDown { 0% { top: -50px; opacity: 0; } 100% { top: 15px; opacity: 1; } }
+
     </style>
 </head>
 <body>
+
+    <div id="liveToast" class="live-toast">User 10 AZN Çıxardı 💸</div>
 
     <div id="dataModal" class="input-modal">
         <div class="modal-content">
@@ -207,7 +214,7 @@
         let tg = window.Telegram.WebApp;
         tg.expand();
 
-        // 1. MƏLUMATLARIN DÜZGÜN YÜKLƏNMƏSİ (ANTİ-RESET)
+        // 1. DATA LOADER
         const urlParams = new URLSearchParams(window.location.search);
         let botBalance = parseFloat(urlParams.get('balance'));
         let botLevel = parseInt(urlParams.get('level'));
@@ -215,12 +222,11 @@
         let localBalance = parseFloat(localStorage.getItem('balance')) || 0;
         let localLevel = parseInt(localStorage.getItem('level')) || 1;
 
-        // Telefondakı çoxdursa, onu götürür (Xal silinməsin deyə)
         let balance = (isNaN(botBalance) || localBalance > botBalance) ? localBalance : botBalance;
         let level = (isNaN(botLevel) || localLevel > botLevel) ? localLevel : botLevel;
         
         let energy = parseInt(localStorage.getItem('energy')) || 500;
-        let earnPerTap = level * 5; // İlk vuruş +5
+        let earnPerTap = level * 5; 
         let levelThreshold = 5000 * Math.pow(2, level - 1);
         
         let defaultUpgrades = [
@@ -235,7 +241,6 @@
         let upgrades = JSON.parse(localStorage.getItem('upgrades')) || defaultUpgrades;
         let profitPerHour = 0;
 
-        // UI Elementləri
         const scoreEl = document.getElementById('score');
         const mineScoreEl = document.getElementById('mine-score');
         const ttScoreEl = document.getElementById('tt-score');
@@ -248,7 +253,28 @@
         const progressFill = document.getElementById('progress-fill');
         const miningGrid = document.getElementById('mining-grid');
 
-        // --- YENİ FUNKSİYALAR (POPUP ÜÇÜN) ---
+        // --- YENİ: CANLI BİLDİRİŞ SİSTEMİ (Fake Notifications) ---
+        const fakeNames = ["Murad", "Aysel", "Elvin", "Zeyn", "Nigar", "Samir", "Leyla", "Admin", "User777"];
+        const fakeActions = ["0.50 AZN Çıxardı 💸", "1K TikTok Bəyənmə Aldı 🎵", "10 AZN Çıxardı 🤑", "5K Like Sifariş Etdi ❤️", "0.20 AZN Çıxardı 💸"];
+
+        function showLiveNotification() {
+            const toast = document.getElementById('liveToast');
+            const randomName = fakeNames[Math.floor(Math.random() * fakeNames.length)];
+            const randomAction = fakeActions[Math.floor(Math.random() * fakeActions.length)];
+            
+            toast.innerText = `${randomName} ${randomAction}`;
+            toast.style.display = 'block';
+
+            setTimeout(() => {
+                toast.style.display = 'none';
+            }, 4000); // 4 saniyə görsənir
+        }
+
+        // Hər 10-15 saniyədən bir bildiriş çıxarır
+        setInterval(showLiveNotification, 12000); 
+        // ----------------------------------------------------
+
+        // POPUP SISTEMI
         let pendingAction = null;
 
         function requestItem(type, price, name) {
@@ -257,8 +283,6 @@
                 return;
             }
             pendingAction = { type, price, name };
-            
-            // Modal mətnini dəyişirik
             const modal = document.getElementById('dataModal');
             const title = document.getElementById('modal-title');
             const desc = document.getElementById('modal-desc');
@@ -266,7 +290,7 @@
             
             if (type === 'withdraw') {
                 title.innerText = "Pul Çıxarışı";
-                desc.innerText = "Zəhmət olmasa Kart və ya M10 nömrənizi yazın:";
+                desc.innerText = "Kart və ya M10 nömrənizi yazın:";
                 input.placeholder = "Məs: 0501234567";
             } else {
                 title.innerText = "TikTok Sifarişi";
@@ -287,15 +311,13 @@
             if (!pendingAction) return;
             const inputVal = document.getElementById('user-input').value;
             if (inputVal.trim() === "") {
-                tg.showAlert("⚠️ Zəhmət olmasa məlumatı yazın!");
+                tg.showAlert("⚠️ Məlumatı daxil edin!");
                 return;
             }
 
-            // Balansı silirik
             balance -= pendingAction.price;
             updateUI();
             
-            // Bota göndəririk
             let data = {
                 action: pendingAction.type,
                 amount: pendingAction.price,
@@ -305,7 +327,6 @@
             tg.sendData(JSON.stringify(data));
             closeModal();
         }
-        // ----------------------------------------
 
         function calculateProfit() {
             profitPerHour = upgrades.reduce((total, item) => total + (item.level * item.profit), 0);
@@ -317,19 +338,15 @@
             mineScoreEl.innerText = displayBalance;
             ttScoreEl.innerText = displayBalance;
             wdScoreEl.innerText = displayBalance;
-            
             energyEl.innerText = energy;
             perTapEl.innerText = "+" + earnPerTap;
             profitEl.innerText = "+" + formatNumber(profitPerHour);
-            
-            levelNumEl.innerText = `Səviyyə ${level}/10`;
+            levelNumEl.innerText = `Lvl ${level}`;
             levelReqEl.innerText = formatNumber(levelThreshold);
-
             let percentage = (balance / levelThreshold) * 100;
             if (percentage > 100) percentage = 100;
             progressFill.style.width = percentage + "%";
-
-            // Yadda saxla
+            
             localStorage.setItem('balance', balance);
             localStorage.setItem('energy', energy);
             localStorage.setItem('level', level);
@@ -343,73 +360,39 @@
                 let card = document.createElement('div');
                 card.className = 'mine-card';
                 card.onclick = () => buyUpgrade(index);
-                card.innerHTML = `
-                    <div class="mine-header">
-                        <i class="fas ${item.icon} mine-icon"></i>
-                        <div>
-                            <div class="mine-title">${item.name}</div>
-                            <div class="mine-profit">Gəlir: +${item.profit}/saat</div>
-                        </div>
-                    </div>
-                    <div class="mine-price-section">
-                        <div class="mine-lvl">Lvl ${item.level}</div>
-                        <div class="mine-price">
-                            <img src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png" width="12" style="margin-right:3px;">
-                            ${formatNumber(currentCost)}
-                        </div>
-                    </div>
-                `;
+                card.innerHTML = `<div class="mine-header"><i class="fas ${item.icon} mine-icon"></i><div><div class="mine-title">${item.name}</div><div class="mine-profit">+${item.profit}/s</div></div></div><div class="mine-price-section"><div class="mine-lvl">Lvl ${item.level}</div><div class="mine-price">${formatNumber(currentCost)}</div></div>`;
                 miningGrid.appendChild(card);
             });
         }
 
         function buyUpgrade(index) {
             let item = upgrades[index];
-            let currentCost = Math.floor(item.cost * Math.pow(1.5, item.level));
-
-            if (balance >= currentCost) {
-                balance -= currentCost;
-                item.level++;
-                calculateProfit();
-                updateUI();
-                renderUpgrades();
-                if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
-            } else {
-                tg.showAlert("❌ Balans kifayət etmir!");
-            }
+            let cost = Math.floor(item.cost * Math.pow(1.5, item.level));
+            if (balance >= cost) { balance -= cost; item.level++; calculateProfit(); updateUI(); renderUpgrades(); }
         }
 
         function tikla(event) {
             if (energy <= 0) return;
-            
-            energy -= 1;
-            balance += earnPerTap;
-
-            if (balance >= levelThreshold) {
-                level++;
+            energy -= 1; balance += earnPerTap;
+            if (balance >= levelThreshold) { 
+                level++; 
                 earnPerTap = level * 5; 
-                levelThreshold *= 2;
-                tg.showAlert(`🎉 Təbriklər! Səviyyə ${level} oldunuz!`);
+                levelThreshold *= 2; 
             }
-
             updateUI();
-            
             if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
-            
             let floatText = document.createElement("div");
             floatText.className = "floating-text";
             floatText.innerText = "+" + earnPerTap;
-            let rect = event.currentTarget.getBoundingClientRect();
-            let x = event.clientX || (rect.left + rect.width / 2);
-            let y = event.clientY || (rect.top + rect.height / 2);
+            let x = event.clientX; let y = event.clientY;
             floatText.style.left = x + "px"; floatText.style.top = y + "px";
             document.body.appendChild(floatText);
             setTimeout(() => floatText.remove(), 800);
         }
 
-        function switchScreen(screenName, btn) {
+        function switchScreen(name, btn) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            document.getElementById('screen-' + screenName).classList.add('active');
+            document.getElementById('screen-' + name).classList.add('active');
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
             if(btn) btn.classList.add('active');
             else document.querySelectorAll('.nav-item')[0].classList.add('active');
@@ -421,23 +404,13 @@
             return num;
         }
 
-        // Pasif Gəlir
-        setInterval(() => {
-            if (profitPerHour > 0) {
-                let profitPerSecond = profitPerHour / 3600;
-                balance += profitPerSecond;
-                updateUI();
-            }
-        }, 1000);
+        setInterval(() => { if (profitPerHour > 0) { balance += profitPerHour / 3600; updateUI(); } }, 1000);
+        setInterval(() => { if (energy < 500) { energy++; updateUI(); } }, 1000);
 
-        // Enerji Bərpası
-        setInterval(() => {
-            if (energy < 500) { energy++; updateUI(); }
-        }, 1000);
-
-        calculateProfit();
-        renderUpgrades();
-        updateUI();
+        calculateProfit(); renderUpgrades(); updateUI();
+        
+        // İlk açılışda bir dənə bildiriş göstərək ki, maraqlı olsun
+        setTimeout(showLiveNotification, 3000);
     </script>
 </body>
 </html>
